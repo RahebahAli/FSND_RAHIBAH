@@ -49,7 +49,7 @@ class Venue(db.Model):
     upcoming_shows_count = db.Column(db.Integer, default=0)
     past_shows_count = db.Column(db.Integer, default=0)
     # PARENT CLASS
-    shows_v = db.relationship('Show', backref='artist', cascade='delete, merge, save-update')
+    shows_v = db.relationship('Show', backref='Venue', cascade='delete, merge, save-update')
 
     def __init__(self, name, city, state, address, phone, image_link, facebook_link, genres, websit_link, description, talent=False, upcoming_shows_count=0, past_shows_count=0):
       self.name = name
@@ -85,7 +85,7 @@ class Artist(db.Model):
     upcoming_shows_count = db.Column(db.Integer, default=0)
     past_shows_count = db.Column(db.Integer, default=0)
     # PARENT CLASS
-    shows_a = db.relationship('Show', backref='artist', cascade='delete, merge, save-update')
+    shows_a = db.relationship('Show', backref='Artist', cascade='delete, merge, save-update')
 
     def __init__(self, name, city, state, phone, genres, image_link, facebook_link,  websit_link, description, venues_Art=False, upcoming_shows_count=0, past_shows_count=0):
       self.name = name
@@ -116,6 +116,7 @@ class Show(db.Model):
 
 # TO CREATE THE DATABASE AND TABLES 
 db.create_all()
+
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
@@ -141,29 +142,17 @@ def index():
 
 #  Venues
 #  ----------------------------------------------------------------
-
 @app.route('/venues')
 def venues():
   # TODO: replace with real venues data. //DONE
   #       num_shows should be aggregated based on number of upcoming shows per venue.
-  cityAndState = db.session.query(Venue.state, Venue.city).group_by(Venue.state, Venue.city).all()
-  #cityAndState = Venue.query.group_by(Venue.state, Venue.city).all()
+  #FIRST WE WILL LIST THE VENUE BASED ON CITY AND STATE 
+  cityAndState = Venue.query.order_by(Venue.state, Venue.city)
   data = []
   for c in cityAndState:
-    venues = db.session.query(Venue.id,Venue.name,
-      Venue.upcoming_shows_count).filter(Venue.city==c[0],Venue.state==c[1]).all()
-    data.append({
-        "city": c[0],
-        "state": c[1],
-        "venues": []})
-    for v in venues:
-      data[-1]["venues"].append({
-              "id": v[0],
-              "name": v[1],
-              "num_upcoming_shows":v[2]})
+    venues = Venue.query.all()
+    data.append({"city": c[0],"state": c[1],"venues": venues})
   return render_template('pages/venues.html', areas=data);
-
-
 
 
 @app.route('/venues/search', methods=['POST'])
@@ -171,16 +160,12 @@ def search_venues():
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive. //DONE
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-  searchResult = Venue.query.filter(Venue.name.ilike("%", request.form['search_term'] ,"%")).all()
-  response={
-    "count": len(searchResult),
-    "data": [] }
+  searchResult = Venue.query.filter(Venue.name.ilike("%{}%".format(request.form.get('search_term', '')))).all()
+  results={"count": len(searchResult), "data": [] }
   for sr in searchResult:
-    response['data'].append({
-         "id": sr.id,
-         "name": sr.name,
-         "num_upcoming_shows": sr.upcoming_shows_count})
-  return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
+    results['data'].append({"id": sr.id, "name": sr.name, "num_upcoming_shows": sr.upcoming_shows_count})
+  return render_template('pages/search_venues.html', results=results, search_term=request.form.get('search_term', ''))
+
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
@@ -190,7 +175,7 @@ def show_venue(venue_id):
   past_shows = []
   upcoming_shows = []
   information = []
-  showVenue = Venue.shows
+  showVenue = Venue.shows_v
   for s in showVenue:
     information = {
       "artist_id": s.artist_id,
@@ -201,7 +186,6 @@ def show_venue(venue_id):
       upcoming_shows.append(information)
     else:
       past_shows.append(information)
-
   dataToShow={
     "id": venueByID.id,
     "name": venueByID.name,
@@ -219,6 +203,7 @@ def show_venue(venue_id):
     "upcoming_shows": upcoming_shows,
     "past_shows_count": len(past_shows),
     "upcoming_shows_count": len(upcoming_shows) }
+
   return render_template('pages/show_venue.html', venue=dataToShow)
 
 
@@ -300,17 +285,11 @@ def search_artists():
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive. //DONE
   # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
   # search for "band" should return "The Wild Sax Band".
-  searchResult = Artist.query.filter(Artist.name.ilike("%", request.form['search_term'] ,"%")).all()
-  response={
-    "count": len(searchResult),
-    "data": [] }
+  searchResult = Artist.query.filter(Artist.name.ilike("%{}%".format(request.form.get('search_term', '')))).all()
+  results={"count": len(searchResult), "data": [] }
   for sr in searchResult:
-    response['data'].append({
-         "id": sr.id,
-         "name": sr.name,
-         "num_upcoming_shows": sr.upcoming_shows_count,
-       })
-  return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))  
+    results['data'].append({"id": sr.id, "name": sr.name, "num_upcoming_shows": sr.upcoming_shows_count})
+  return render_template('pages/search_artists.html', results=results, search_term=request.form.get('search_term', '')) 
   
 
 @app.route('/artists/<int:artist_id>')
