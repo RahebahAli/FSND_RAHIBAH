@@ -1,7 +1,10 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
+from wtforms import (StringField, 
+    SelectField, SelectMultipleField, 
+    DateTimeField, BooleanField)
 from wtforms.validators import DataRequired, AnyOf, URL
+from enum import Enum
 #--------------------------------------------------------------------------------------------
 
 
@@ -41,21 +44,22 @@ class Genre_Check(Enum):
     Electronic = 'Electronic'
     Folk = 'Folk'
     Funk = 'Funk'
-    Hip-Hop = 'Hip-Hop'
-    Heavy Metal = 'Heavy Metal'
+    Hip_Hop = 'Hip-Hop'
+    Heavy_Metal = 'Heavy Metal'
     Instrumental = 'Instrumental'
     Jazz = 'Jazz'
-    Musical Theatre = 'Musical Theatre'
+    Musical_Theatre = 'Musical Theatre'
     Pop = 'Pop'
     Punk = 'Punk'
     R_B = 'R&B'
     Reggae = 'Reggae'
-    Rock n Roll = 'Rock n Roll'
+    Rock_n_Roll = 'Rock n Roll'
     Soul = 'Soul'
     Other = 'Other'
-    genres = []
-
+    
+    @classmethod
     def genres_list(genre):
+        genres = []
         for g in genre:
             genres.append(g)
         return genres
@@ -112,9 +116,10 @@ class State_Check(Enum):
     WV = 'WV'
     WI = 'WI'
     WY = 'WY'
-    states = []
-
+    
+    @classmethod
     def states_list(state):
+        states = []
         for s in state:
             states.append(s)
         return states

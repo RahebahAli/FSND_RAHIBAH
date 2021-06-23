@@ -17,7 +17,7 @@ migrate = Migrate(app, db)
 #----------------------------------------------------------------------------#
 
 class Venue(db.Model):
-    __tablename__ = 'venues'
+    __tablename__ = 'Venue'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
@@ -57,7 +57,7 @@ class Venue(db.Model):
 
 
 class Artist(db.Model):
-    __tablename__ = 'artists'
+    __tablename__ = 'Artist'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
@@ -96,7 +96,7 @@ class Artist(db.Model):
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration. //DONE
 class Show(db.Model):
-    __tablename__ = 'shows'
+    __tablename__ = 'Show'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False) # CHILD CLASS
