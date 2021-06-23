@@ -17,7 +17,7 @@ migrate = Migrate(app, db)
 #----------------------------------------------------------------------------#
 
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
@@ -30,14 +30,17 @@ class Venue(db.Model):
     # TODO: implement any missing fields, as a database migration using Flask-Migrate //DONE
     genres = db.Column(db.String(120))
     websit_link = db.Column(db.String(120))
-    talent = db.Column(db.Boolean, default=False)
-    description = db.Column(db.String(1000))
+    seeking_talent = db.Column(db.Boolean, default=False)
+    seeking_description = db.Column(db.String(1000))
     upcoming_shows_count = db.Column(db.Integer, default=0)
     past_shows_count = db.Column(db.Integer, default=0)
     # PARENT CLASS
-    shows_v = db.relationship('Show', backref='Venue', cascade='delete, merge, save-update')
+    shows_v = db.relationship('Show', backref='Venue', 
+        cascade='delete, merge, save-update')
 
-    def __init__(self, name, city, state, address, phone, image_link, facebook_link, genres, websit_link, description, talent=False, upcoming_shows_count=0, past_shows_count=0):
+    def __init__(self, name, city, state, address, phone, image_link, 
+        facebook_link, genres, websit_link, seeking_description, 
+        seeking_talent=False, upcoming_shows_count=0, past_shows_count=0):
       self.name = name
       self.city = city
       self.state = state
@@ -47,14 +50,14 @@ class Venue(db.Model):
       self.facebook_link = facebook_link
       self.genres = genres
       self.websit_link = websit_link
-      self.talent = talent
-      self.description = description
+      self.seeking_talent = seeking_talent
+      self.seeking_description = seeking_description
       self.upcoming_shows_count = upcoming_shows_count
       self.past_shows_count = past_shows_count
 
 
 class Artist(db.Model):
-    __tablename__ = 'Artist'
+    __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
@@ -66,14 +69,17 @@ class Artist(db.Model):
     facebook_link = db.Column(db.String(120))
     # TODO: implement any missing fields, as a database migration using Flask-Migrate //DONE
     websit_link = db.Column(db.String(120))
-    venues_Art = db.Column(db.Boolean, default=False)
-    description = db.Column(db.String(1000))
+    seeking_venue = db.Column(db.Boolean, default=False)
+    seeking_description = db.Column(db.String(1000))
     upcoming_shows_count = db.Column(db.Integer, default=0)
     past_shows_count = db.Column(db.Integer, default=0)
     # PARENT CLASS
-    shows_a = db.relationship('Show', backref='Artist', cascade='delete, merge, save-update')
+    shows_a = db.relationship('Show', backref='Artist', 
+        cascade='delete, merge, save-update')
 
-    def __init__(self, name, city, state, phone, genres, image_link, facebook_link,  websit_link, description, venues_Art=False, upcoming_shows_count=0, past_shows_count=0):
+    def __init__(self, name, city, state, phone, genres, image_link, 
+        facebook_link,  websit_link, seeking_description, seeking_venue=False, 
+        upcoming_shows_count=0, past_shows_count=0):
       self.name = name
       self.city = city
       self.state = state
@@ -82,15 +88,15 @@ class Artist(db.Model):
       self.image_link = image_link
       self.facebook_link = facebook_link
       self.websit_link = websit_link
-      self.venues_Art = venues_Art
-      self.description = description
+      self.seeking_venue = seeking_venue
+      self.seeking_description = seeking_description
       self.upcoming_shows_count = upcoming_shows_count
       self.past_shows_count = past_shows_count
 
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration. //DONE
 class Show(db.Model):
-    __tablename__ = 'Show'
+    __tablename__ = 'shows'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False) # CHILD CLASS
