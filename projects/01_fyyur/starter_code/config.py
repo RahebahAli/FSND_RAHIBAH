@@ -10,4 +10,4 @@ DEBUG = True
 # TODO IMPLEMENT DATABASE URL // DONE
 # SQLALCHEMY_DATABASE_URI = '<Put your local database url>'
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost:5432/fyyur_p'
+SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost:5432/fyyur_project'
