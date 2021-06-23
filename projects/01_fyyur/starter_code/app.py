@@ -87,22 +87,25 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   # Shows the venue page with the given venue_id
-  
   venueByID = Venue.query.get(venue_id)
+
+  past_shows_query = db.session.query(Show).join(Artist).filter(Show.artist_id==Artist.id).filter(Show.start_time>datetime.now()).all()
   past_shows = []
+  upcoming_shows_query = db.session.query(Show).join(Artist).filter(Show.artist_id==Artist.id).filter(Show.start_time>datetime.now()).all()
   upcoming_shows = []
-  information = []
-  showVenue = Venue.shows_v
-  for s in showVenue:
-    information = {
-      "artist_id": s.artist_id,
-      "artist_name": s.Artist.name,
-      "artist_image_link": s.Artist.image_link,
-      "start_time": s.start_time}
-    if(s.upcoming):
-      upcoming_shows.append(information)
-    else:
-      past_shows.append(information)
+  if(s.upcoming):
+    upcoming_shows.append({
+    "artist_id": past_shows_query.artist_id,
+    "artist_name": past_shows_query.Artist.name,
+    "artist_image_link": past_shows_query.Artist.image_link,
+    "start_time": past_shows_query.start_time})
+  else:
+    past_shows.append({
+      "artist_id": upcoming_shows_query.artist_id,
+    "artist_name": upcoming_shows_query.Artist.name,
+    "artist_image_link": upcoming_shows_query.Artist.image_link,
+    "start_time": upcoming_shows_query.start_time})
+
   dataToShow={
     "id": venueByID.id,
     "name": venueByID.name,
@@ -210,20 +213,23 @@ def search_artists():
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
   artistByID = Artist.query.get(artist_id)
+  past_shows_query = db.session.query(Show).join(Venue).filter(Show.venue_id==Venue.id).filter(Show.start_time>datetime.now()).all()
   past_shows = []
+  upcoming_shows_query = db.session.query(Show).join(Artist).filter(Show.venue_id==Venue.id).filter(Show.start_time>datetime.now()).all()
   upcoming_shows = []
-  information = []
-  showArtist = Artist.shows
-  for s in showArtist:
-    information = {
-      "venue_id": s.venue_id,
-      "venue_name": s.Venue.name,
-      "venue_image_link":s.Venue.image_link,
-      "start_time": s.start_time}
-    if(s.upcoming):
-      upcoming_shows.append(information)
-    else:
-      past_shows.append(information)
+
+  if(s.upcoming):
+    upcoming_shows.append({
+      "venue_id": past_shows_query.venue_id,
+    "venue_name": past_shows_query.Venue.name,
+    "venue_image_link":past_shows_query.Venue.image_link,
+    "start_time": past_shows_query.start_time})
+  else:
+    past_shows.append({
+      "venue_id": upcoming_shows_query.venue_id,
+    "venue_name": upcoming_shows_query.Venue.name,
+    "venue_image_link":upcoming_shows_query.Venue.image_link,
+    "start_time": upcoming_shows_query.start_time})
 
   dataToShow={
     "id": artistByID.id,
