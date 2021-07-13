@@ -430,11 +430,11 @@ def create_show_submission():
   return render_template('pages/home.html')
 
 @app.errorhandler(400)
-def not_found_error(error):
+def bad_request_error(error):
     return render_template('errors/400.html'), 400
 
 @app.errorhandler(401)
-def not_found_error(error):
+def unauthorized_error(error):
     return render_template('errors/401.html'), 401
 
 @app.errorhandler(404)
@@ -442,7 +442,7 @@ def not_found_error(error):
     return render_template('errors/404.html'), 404
 
 @app.errorhandler(405)
-def not_found_error(error):
+def invalid_method_error(error):
     return render_template('errors/405.html'), 405
 
 @app.errorhandler(500)
