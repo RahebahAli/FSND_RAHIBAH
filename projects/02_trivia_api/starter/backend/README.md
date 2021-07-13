@@ -113,6 +113,7 @@ GET ```/categories ```
 ```
 
 **Error Handling**
+
 The endpoint handles seven errors:
 - 400: Bad Request
 - 401: Unauthorized
