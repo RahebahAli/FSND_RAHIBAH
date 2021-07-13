@@ -123,6 +123,16 @@ The endpoint handles seven errors:
 - 422: Not Processable
 - 500: Server error
 
+Example:
+```
+  @app.errorhandler(404)
+  def not_found(error):
+      return jsonify({
+          'success': False,
+          'error': 404,
+          'message': "resource not found"
+      }), 404
+ ```
 
 ## Testing
 To run the tests, run
