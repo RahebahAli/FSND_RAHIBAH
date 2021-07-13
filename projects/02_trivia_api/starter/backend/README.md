@@ -102,7 +102,7 @@ GET '/api/v1.0/categories'
 
 ## API Endpoint
 GET ```/categories ```
-- Display all category
+- View all categories
 ```
 {'1' : "Science",
 '2' : "Art",
