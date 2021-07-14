@@ -13,7 +13,7 @@ def paginate_questions(request, selection):
   page = request.args.get('page', 1, type=int) 
   start = (page - 1) * QUESTIONS_PER_PAGE
   end = start + QUESTIONS_PER_PAGE
-  questions = [question.format() for question in selection]
+  questions = {question.format() for question in selection}
   current_questions = questions[start:end]
   return current_questions
 
@@ -36,7 +36,7 @@ def create_app(test_config=None):
   @app.route('/categories')
   def retrieve_categories():
     categories = Category.query.order_by(Category.type).all() # GETTING ALL CATEGORY
-    categories_dictionry = [category.id: category.type for category in categories]
+    categories_dictionry = {category.id: category.type for category in categories}
     # CHECK: IF NOT FOUND ANY CATEGORY ( abort 404 )
     if len(categories) == 0:
       abort(404)
@@ -119,7 +119,7 @@ def create_app(test_config=None):
       searchResult = Question.query.filter(Question.question.ilike("%{}%".format(search_item))).all()
       return jsonify({
         'success': True,
-        'questions': [question.format() for question in search_results],
+        'questions': {question.format() for question in search_results},
         'total_questions': len(search_results),
         'current_category': None
         })
@@ -130,7 +130,7 @@ def create_app(test_config=None):
   def get_questions_by_category(category_id):
     try:
       questions = Question.query.filter(Question.category == str(category_id)).all()
-      list_questions = [ques.format() for ques in questions]
+      list_questions = {ques.format() for ques in questions}
       return jsonify({
           'success': True,
           'questions': list_questions,
