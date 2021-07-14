@@ -82,6 +82,37 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(question, None)
 
 
+    def test_422_if_question_does_not_exist(self):
+        res = self.client().delete('/questions/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')  
+
+
+    # Play quiz
+    def test_play_quiz(self):
+        post_data = {
+            'previous_questions': [],
+            'quiz_category': {
+                'type': 'History',
+                'id': 4}}
+        res = self.client().post('/quizzes', json=post_data)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertTrue(data["question"])
+
+
+    def test_422_play_quiz(self):
+        res = self.client().post('/quizzes')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], "unprocessable")
+
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
