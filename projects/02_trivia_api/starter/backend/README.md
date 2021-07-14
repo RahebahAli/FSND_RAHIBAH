@@ -40,7 +40,7 @@ flask run --reload
 
 The `--reload` flag will detect file changes and restart the server automatically.
 
-## ToDo Tasks
+## Tasks
 These are the files you'd want to edit in the backend:
 
 1. *./backend/flaskr/`__init__.py`*
@@ -100,6 +100,39 @@ GET '/api/v1.0/categories'
 
 ```
 
+## API Endpoint
+GET ```/categories ```
+- View all categories
+```
+{'1' : "Science",
+'2' : "Art",
+'3' : "Geography",
+'4' : "History",
+'5' : "Entertainment",
+'6' : "Sports"}
+```
+
+**Error Handling**
+
+The endpoint handles seven errors:
+- 400: Bad Request
+- 401: Unauthorized
+- 404: Resource Not Found
+- 405: Method Not Alowed
+- 406: Not acceptable
+- 422: Not Processable
+- 500: Server error
+
+Example:
+```
+  @app.errorhandler(404)
+  def not_found(error):
+      return jsonify({
+          'success': False,
+          'error': 404,
+          'message': "resource not found"
+      }), 404
+ ```
 
 ## Testing
 To run the tests, run
