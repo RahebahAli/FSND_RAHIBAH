@@ -77,7 +77,7 @@ def create_app(test_config=None):
       question.delete()
       return jsonify({
         'success': True,
-        'deleted': question_id
+        'deleted': question_id,
         'questions': current_questions,
         'total_questions': len(selection)})
     except:
@@ -103,7 +103,7 @@ def create_app(test_config=None):
 
       return jsonify({
         'success': True,
-        'created': question.id
+        'created': question.id,
         'questions': current_questions,
         'total_questions': len(selection)})
 
