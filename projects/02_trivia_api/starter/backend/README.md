@@ -111,6 +111,19 @@ GET ```/categories ```
 '5' : "Entertainment",
 '6' : "Sports"}
 ```
+GET ```/questions ```
+- Return questions
+- Depending on paginated: will be ten questions per page.
+
+
+DELETE ```/questions/${id} ```
+- Delete a specified question by using the ID.
+
+GET ```/categories/${id}/questions ```
+- Return a list of questions that have same the category.
+
+POST ```/quizzes ```
+- Play a quiz game.
 
 **Error Handling**
 
@@ -125,13 +138,11 @@ The endpoint handles seven errors:
 
 Example:
 ```
-  @app.errorhandler(404)
-  def not_found(error):
-      return jsonify({
-          'success': False,
-          'error': 404,
-          'message': "resource not found"
-      }), 404
+{
+   'success': False,
+   'error': 404,
+    'message': "resource not found"
+    }
  ```
 
 ## Testing
