@@ -115,7 +115,7 @@ def create_app(test_config=None):
   @app.route('/questions/search', methods=['POST'])
   def question_search():
     body = request.get_json()
-    search_item = body.get('itemSearch', None)
+    search_item = body.get('search_term', None)
     if search_item:
       searchResult = Question.query.filter(Question.question.ilike("%{}%".format(search_item))).all()
       return jsonify({
@@ -141,25 +141,28 @@ def create_app(test_config=None):
         abort(404)
 
   # Endpoint to play quiz.
-  @app.route("/quizzes", methods=['POST'])
-  def get_question_to_play_quiz():
-    body = request.get_json()
-    category = Category.query(Category.id).filter(Category.type == quiz_category).all()
-    questions_query = Question.query.filter(Question.category == category_id).all()
-    #list_questions = [ques.format() for ques in questions_query]
-    #c_question = random.choice(list_questions)
-    c_question = random.randrange(0, number_questions)
-    number_questions = len(questions_query)
-    if number_questions > 0:
+  @app.route('/quizzes', methods=['POST'])
+  def play_quiz():
+    try:
+      body = request.get_json()
+      if not ('quiz_category' in body and 'previous_questions' in body):
+          abort(422)
+      quiz_category = body.get('quiz_category')
+      list_previous_questions = body.get('previous_questions')
+
+      if quiz_category['type'] == 'click':
+          available_questions = Question.query.filter(
+              Question.id.notin_((list_previous_questions))).all()
+      else:
+          available_questions = Question.query.filter_by(
+              category=quiz_category['id']).filter(Question.id.notin_((list_previous_questions))).all()
+      new_question = available_questions[random.randrange(
+          0, len(available_questions))].format() if len(available_questions) > 0 else None
       return jsonify({
-        'success': True,
-        'question': c_question
-        })
-    else:
-      return ({
-        'success': True,
-        'question': None
-        })
+          'success': True,
+          'question': new_question})
+    except:
+        abort(422)
 
   # Endpoint to error handlers for all expected errors.
   @app.errorhandler(400)
