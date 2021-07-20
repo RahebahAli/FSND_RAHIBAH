@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, abort, jsonify
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -23,7 +24,7 @@ def create_app(test_config=None):
   setup_db(app)
   
   #Set up CORS. Allow '*' for origins.
-  CORS(app)
+  CORS(app, resources={r"*": {"origins": "*"}})
 
   #Use the after_request decorator to set Access-Control-Allow.
   @app.after_request
@@ -33,7 +34,7 @@ def create_app(test_config=None):
     return response
 
   #Endpoint to display all available categories.
-  @app.route('/categories')
+  @app.route('/categories', methods=['GET'])
   def retrieve_categories():
     categories = Category.query.order_by(Category.type).all() # GETTING ALL CATEGORY
     categories_dictionry = {category.id: category.type for category in categories}
@@ -48,7 +49,7 @@ def create_app(test_config=None):
 
   # Endpoint for questions: Display list of questions, 
   # number of total questions, current category, categories.
-  @app.route('/questions')
+  @app.route('/questions', methods=['GET'])
   def retrieve_questions():
     selection = Question.query.order_by(Question.id).all()
     current_questions = paginate_questions(request, selection)

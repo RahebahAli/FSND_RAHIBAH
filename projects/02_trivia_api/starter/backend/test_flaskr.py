@@ -15,7 +15,8 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = "postgres://{}:{}@{}/{}".format('postgres', 'postgres','localhost:5432', self.database_name)
+
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -46,7 +47,7 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'Resource not found')
+        self.assertEqual(data['message'], 'resource not found')
 
 
     # Category Test
@@ -61,7 +62,7 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'Resource not found')
+        self.assertEqual(data['message'], 'resource not found')
 
 
     def test_422_if_question_does_not_exist(self):
