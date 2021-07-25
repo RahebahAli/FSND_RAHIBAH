@@ -55,18 +55,18 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], 'resource not found')
 
     # Category Test
-    def test_get_categories(self):
+    def test_retrieve_categories(self):
         res = self.client().get('/categories')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
-    def test_get_categories(self):
+    def test_retrieve_categories(self):
         res = self.client().get('/categories/2/questions')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['total_questions'])
+        self.assertTrue(data['totalQuestions'])
         self.assertTrue(len(data['questions']))
 
     def test_404_sent_requesting_beyond_valid_page(self):
@@ -96,7 +96,7 @@ class TriviaTestCase(unittest.TestCase):
     # Search Question
     def test_search_question(self):
         res = self.client().post('/questions/search', json={
-            "search_term": "title"
+            'searchTerm': 'title'
             })
         data = res.get_json()
         self.assertEqual(res.status_code, 200)

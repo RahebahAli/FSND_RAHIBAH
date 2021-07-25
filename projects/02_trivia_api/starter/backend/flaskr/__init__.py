@@ -40,16 +40,19 @@ def create_app(test_config=None):
   @app.route('/categories', methods=['GET'])
   def retrieve_categories():
     # GETTING ALL CATEGORY
-    categories = Category.query.order_by(Category.type).all()
-    categories_dictionry = {category.id: category.type
-                            for category in categories}
+    categories = Category.query.all()
+    list_cat = [category.format() for category in categories]
+    categories_dictionary = {}
+    for lst in list_cat:
+      categories_dictionary[lst['id']] = lst['type']
+
     # CHECK: IF NOT FOUND ANY CATEGORY ( abort 404 )
     if len(categories) == 0:
       abort(404)
     # VIEW DATA.
     return jsonify({
       'success': True,
-      'categories': categories_dictionry})
+      'categories': categories_dictionary})
 
   # Endpoint for questions: Display list of questions,
   # number of total questions, current category, categories.
@@ -75,8 +78,6 @@ def create_app(test_config=None):
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
     try:
-      selection = Question.query.order_by(Question.id).all()
-      current_questions = paginate_questions(request, selection)
       question = Question.query.get(question_id)
       if question is None:
         abort(404)
@@ -143,7 +144,7 @@ def create_app(test_config=None):
     return jsonify({
         'success': True,
         'questions': current_questions,
-        'total_questions': len(questions),
+        'totalQuestions': len(questions),
         'current_category': current_category.format(),
         'categories': categories
     })
@@ -234,7 +235,7 @@ def create_app(test_config=None):
     }), 422
 
   @app.errorhandler(500)
-  def unprocessable(error):
+  def server_error(error):
     return jsonify({
         'success': False,
         'error': 500,
