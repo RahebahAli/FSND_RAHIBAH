@@ -175,8 +175,8 @@ def create_app(test_config=None):
           'success': True,
           'question': question
         })
-      else:
-        question = random.choice(f_questions)
+        else:
+          question = random.choice(f_questions)
 
     return jsonify({
         'success': True,
