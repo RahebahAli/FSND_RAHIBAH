@@ -118,13 +118,13 @@ def create_app(test_config=None):
   @app.route('/questions/search', methods=['POST'])
   def question_search():
     body = request.get_json()
-    search_item = body.get('search_term', None)
+    search_item = body.get('searchTerm', None)
     if search_item:
       searchResult = Question.query.filter(Question.question.ilike("%{}%".format(search_item))).all()
       return jsonify({
         'success': True,
-        'questions': {question.format()
-                      for question in search_results},
+        'questions': [question.format()
+                      for question in search_results],
         'total_questions': len(search_results),
         'current_category': None
         })
@@ -151,26 +151,38 @@ def create_app(test_config=None):
   # Endpoint to play quiz.
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
-    try:
-      body = request.get_json()
-      if not ('quiz_category' in body and 'previous_questions' in body):
-          abort(422)
-      quiz_category = body.get('quiz_category')
-      list_previous_questions = body.get('previous_questions')
+    body = request.get_json()
+    prev_qs = body.get('previous_questions')
+    quiz_category = body.get('quiz_category')
 
-      if quiz_category['type'] == 'click':
-          available_questions = Question.query.filter(
-              Question.id.notin_((list_previous_questions))).all()
-      else:
-          available_questions = Question.query.filter_by(
-              category=quiz_category['id']).filter(Question.id.notin_((list_previous_questions))).all()
-      new_question = available_questions[random.randrange(
-          0, len(available_questions))].format() if len(available_questions) > 0 else None
-      return jsonify({
-          'success': True,
-          'question': new_question})
+    try:
+        request_cat = quiz_category['id']
     except:
-        abort(422)
+        abort(400)
+
+    if request_cat == 0:
+        questions = Question.query.all()
+    else:
+        questions = Question.query.filter(Question.category == str(request_cat)).all()
+
+    questions = [question.format() for question in questions]
+
+    pruned_qs = []
+    for q in questions:
+        if q['id'] not in prev_qs:
+            pruned_qs.append(q)
+
+    if len(pruned_qs) == 0:
+        return jsonify({
+            'success': True
+        })
+
+    question = random.choice(pruned_qs)
+
+    return jsonify({
+        'success': True,
+        'question': question
+    })
 
   # Endpoint to error handlers for all expected errors.
   @app.errorhandler(400)
