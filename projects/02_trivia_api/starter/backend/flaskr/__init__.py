@@ -144,7 +144,7 @@ def create_app(test_config=None):
     return jsonify({
         'success': True,
         'questions': current_questions,
-        'totalQuestions': len(questions),
+        'total_questions': len(questions),
         'current_category': current_category.format(),
         'categories': categories
     })
@@ -166,19 +166,17 @@ def create_app(test_config=None):
     else:
         questions = Question.query.filter(Question.category == str(request_cat)).all()
 
-    questions = [question.format() for question in questions]
+    f_questions = [question.format() for question in questions]
+    question = random.choice(f_questions)
 
-    pruned_qs = []
-    for q in questions:
-        if q['id'] not in prev_qs:
-            pruned_qs.append(q)
-
-    if len(pruned_qs) == 0:
-        return jsonify({
-            'success': True
+    while len(prev_qs) < len(f_questions):
+        if question['id'] not in prev_qs:
+          return jsonify({
+          'success': True,
+          'question': question
         })
-
-    question = random.choice(pruned_qs)
+      else:
+        question = random.choice(f_questions)
 
     return jsonify({
         'success': True,
@@ -211,7 +209,7 @@ def create_app(test_config=None):
     }), 404
 
   @app.errorhandler(405)
-  def Method_not_allowed(error):
+  def method_not_allowed(error):
     return jsonify({
         'success': False,
         'error': 405,
@@ -233,7 +231,7 @@ def create_app(test_config=None):
         'error': 422,
         'message': "unprocessable"
     }), 422
-
+'''
   @app.errorhandler(500)
   def server_error(error):
     return jsonify({
@@ -241,5 +239,5 @@ def create_app(test_config=None):
         'error': 500,
         'message': "server error"
     }), 500
-
+'''
   return app
