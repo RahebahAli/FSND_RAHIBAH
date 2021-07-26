@@ -156,6 +156,9 @@ def create_app(test_config=None):
     prev_qs = body.get('previous_questions')
     quiz_category = body.get('quiz_category')
 
+    if ((quiz_category == None) or (prev_qs == None)):
+      abort(400)
+
     try:
         request_cat = quiz_category['id']
     except:
@@ -231,5 +234,5 @@ def create_app(test_config=None):
         'error': 422,
         'message': "unprocessable"
     }), 422
-    
+
   return app
