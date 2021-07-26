@@ -157,7 +157,7 @@ def create_app(test_config=None):
     quiz_category = body.get('quiz_category')
 
     if ((quiz_category == None) or (prev_qs == None)):
-      abort(400)
+      abort(422)
 
     try:
         request_cat = quiz_category['id']
@@ -167,7 +167,7 @@ def create_app(test_config=None):
     if request_cat == 0:
         questions = Question.query.all()
     else:
-        questions = Question.query.filter(Question.category == str(request_cat)).all()
+        questions = Question.query.filter(Question.category == request_cat).all()
 
     f_questions = [question.format() for question in questions]
     question = random.choice(f_questions)
@@ -181,10 +181,9 @@ def create_app(test_config=None):
         else:
           question = random.choice(f_questions)
 
-    return jsonify({
-        'success': True,
-        'question': question
-    })
+    else:
+      return jsonify({
+          'success': False})
 
   # Endpoint to error handlers for all expected errors.
   @app.errorhandler(400)
