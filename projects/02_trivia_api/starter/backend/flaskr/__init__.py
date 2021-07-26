@@ -125,8 +125,8 @@ def create_app(test_config=None):
       return jsonify({
         'success': True,
         'questions': [question.format()
-                      for question in search_results],
-        'total_questions': len(search_results),
+                      for question in searchResult],
+        'total_questions': len(searchResult),
         'current_category': None
         })
     abort(404)
