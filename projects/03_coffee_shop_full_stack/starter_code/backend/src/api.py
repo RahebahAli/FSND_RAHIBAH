@@ -17,7 +17,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this funciton will add one
 '''
-# db_drop_and_create_all()
+#db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -33,7 +33,7 @@ CORS(app)
 
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
-    Drinks = Drink.query.all()
+    drinks = Drink.query.all()
     drinksShort = [d.short() for d in drinks]
     return jsonify({
         'success': True,
@@ -55,7 +55,7 @@ def get_drinks():
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(pay):
-    Drinks = Drink.query.all()
+    drinks = Drink.query.all()
     drinksLong = [d.long() for d in drinks]
     return jsonify({
         'success': True,

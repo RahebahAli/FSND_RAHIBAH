@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 # AUTH0_DOMAIN = 'udacity-fsnd.auth0.com'
 
-AUTH0_DOMAIN = 'dev-pua0a288.us.auth0.com'
+AUTH0_DOMAIN = 'dev-xvm7pc51.us.auth0.com'
 ALGORITHMS = ['RS256']
 API_AUDIENCE = 'coffee_shop'
 
@@ -179,7 +179,10 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
-            payload = verify_decode_jwt(token)
+            try:
+                payload = verify_decode_jwt(token)
+            except:
+                abort(403)
             check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
 
